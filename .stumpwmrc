@@ -1,0 +1,64 @@
+;; set wallpaper and terminal theme
+(run-shell-command "feh --bg-fill ~/Pictures/Mandelbrot_Set-12-DOUBLE_SPIRAL-large.jpg")
+(run-shell-command "xrdb ~/.Xresources")
+
+;; work in here
+(in-package :stumpwm)
+
+;;  group format
+(setq *GROUP-FORMAT* "%s%t")
+
+;; banish cursor
+(banish)
+
+;; set gravity
+(setq *message-window-gravity* :center)
+(setq *input-window-gravity* :center)
+
+;; ;; gaps
+;; (load-module "swm-gaps")
+;; (setf swm-gaps:*head-gaps-size* 0)	; borders of the monitor
+;; (setf swm-gaps:*inner-gaps-size* 5)	; Inner gaps 
+;; (setf swm-gaps:*outer-gaps-size* 6)	; Outer gaps
+
+;; programs
+(define-key *root-map* (kbd "c") "exec urxvt")
+(define-key *root-map* (kbd "e") "exec urxvt -e emacs -nw")
+(define-key *root-map* (kbd "I") "exec icecat")
+;; (define-key *root-map* (kbd "C-x") "exec slock")
+;; (define-key *root-map* (kbd "C") "exec google-chrome")
+(define-key *root-map* (kbd "F") "exec freecad")
+
+;; clipboard
+(let (clip)
+  (defcommand copy () ()
+    (setq clip (get-x-selection 10)))
+  (defcommand paste () ()
+    (window-send-string clip)))
+
+(define-key *root-map* (kbd "[") "copy")
+(define-key *root-map* (kbd "]") "paste")
+
+;; music stuff
+(define-key *root-map* (kbd "M") "exec urxvt -e ncmpcpp")
+(let (status)
+  (defcommand play-or-pause () ()
+    (if (equalp status "pause")
+	(progn (run-shell-command "mpc pause")
+	       (setq status "play"))
+      (progn (run-shell-command "mpc play")
+	     (setq status "pause")))))
+(define-key *top-map* (kbd "XF86AudioPlay") "play-or-pause")
+(define-key *top-map* (kbd "XF86AudioNext") "exec mpc next")
+(define-key *top-map* (kbd "XF86AudioPrev") "exec mpc prev")
+
+;; mode line format
+(setf *screen-mode-line-format*
+      (list "^B[^b"
+	    '(:eval (run-shell-command "date +'%I:%M^B|^b%D' | tr -d [:cntrl:]" t))
+	    "^B]^b %W"))
+(setf *mode-line-timeout* 1)
+(mode-line)
+
+;; quit
+(define-key *root-map* (kbd "C-q") "quit")

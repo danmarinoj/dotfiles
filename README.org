@@ -1,0 +1,3 @@
+# Dotfiles
+
+These are my configuration files for StumpWM and GuixSD
