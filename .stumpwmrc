@@ -1,6 +1,7 @@
 ;; set wallpaper and terminal theme
 (run-shell-command "feh --bg-fill ~/Pictures/Mandelbrot_Set-12-DOUBLE_SPIRAL-large.jpg")
 (run-shell-command "xrdb ~/.Xresources")
+(set-module-dir "/run/current-system/profile/share/common-lisp/sbcl")
 
 ;; work in here
 (in-package :stumpwm)
@@ -15,18 +16,18 @@
 (setq *message-window-gravity* :center)
 (setq *input-window-gravity* :center)
 
-;; ;; gaps
-;; (load-module "swm-gaps")
-;; (setf swm-gaps:*head-gaps-size* 0)	; borders of the monitor
-;; (setf swm-gaps:*inner-gaps-size* 5)	; Inner gaps 
-;; (setf swm-gaps:*outer-gaps-size* 6)	; Outer gaps
+;; gaps
+(load-module "swm-gaps")
+(setf swm-gaps:*head-gaps-size* 0)	; borders of the monitor
+(setf swm-gaps:*inner-gaps-size* 5)	; Inner gaps
+(setf swm-gaps:*outer-gaps-size* 6)	; Outer gaps
 
 ;; programs
 (define-key *root-map* (kbd "c") "exec urxvt")
 (define-key *root-map* (kbd "e") "exec urxvt -e emacs -nw")
 (define-key *root-map* (kbd "I") "exec icecat")
 ;; (define-key *root-map* (kbd "C-x") "exec slock")
-;; (define-key *root-map* (kbd "C") "exec google-chrome")
+(define-key *root-map* (kbd "C") "exec chromium")
 (define-key *root-map* (kbd "F") "exec freecad")
 
 ;; clipboard

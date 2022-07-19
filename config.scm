@@ -44,8 +44,8 @@
                      screen
                      sbcl
                      stumpwm
-		     sbcl-stumpwm-swm-gaps
                      `(,stumpwm "lib")
+		     sbcl-stumpwm-swm-gaps
                      font-dejavu
                      ;; for HTTPS access
                      nss-certs)
@@ -62,13 +62,7 @@
 			  (service xfce-desktop-service-type)
 			  (service mpd-service-type
 				   (mpd-configuration
-				    (outputs
-				     (list (mpd-output
-					    (name "iFi (by AMR) HD USB Audio")
-					    (type "alsa")
-					    (mixer-type 'null)
-					    (extra-options
-					     `((device . "hw:1"))))))))
+				    (user "daniel")))
 			  (service openssh-service-type))
                     (modify-services %desktop-services
 				     (delete gdm-service-type))))
