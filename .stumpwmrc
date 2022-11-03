@@ -1,10 +1,34 @@
-;; set wallpaper and terminal theme
-(run-shell-command "feh --bg-fill ~/Pictures/Mandelbrot_Set-12-DOUBLE_SPIRAL-large.jpg")
-(run-shell-command "xrdb ~/.Xresources")
-(set-module-dir "/run/current-system/profile/share/common-lisp/sbcl")
+;; -*-lisp-*-
 
 ;; work in here
 (in-package :stumpwm)
+
+(setf *mode-line-position* :bottom)
+
+;; wallpaper setting function
+(defun set-wallpaper (wallpaper-picture)
+  (run-shell-command (concatenate 'string
+				  "feh --bg-fill ~/Pictures/wallpapers/"
+				  wallpaper-picture
+				  ".jpg")))
+
+;; set wallpaper and terminal theme
+(set-wallpaper "Mandelbrot_Set-12-DOUBLE_SPIRAL-large")
+(run-shell-command "xrdb ~/.Xresources")
+(set-module-dir "/run/current-system/profile/share/common-lisp/sbcl")
+
+;; random wallpaper
+(setf *random-state* (make-random-state t))
+(defun random-wallpaper-fun ()
+  (setf wallpaper-dir
+	(directory "/home/daniel/Pictures/wallpapers/*.jpg"))
+  (setf choice (random (length wallpaper-dir)))
+  (nth choice wallpaper-dir))
+(defcommand random-wallpaper () ()
+  (setf current-wallpaper (pathname-name (random-wallpaper-fun)))
+  (echo current-wallpaper)
+  (set-wallpaper current-wallpaper))
+(define-key *root-map* (kbd "F12") "random-wallpaper")
 
 ;;  group format
 (setq *GROUP-FORMAT* "%s%t")
@@ -20,15 +44,19 @@
 (load-module "swm-gaps")
 (setf swm-gaps:*head-gaps-size* 0)	; borders of the monitor
 (setf swm-gaps:*inner-gaps-size* 5)	; Inner gaps
-(setf swm-gaps:*outer-gaps-size* 6)	; Outer gaps
+(setf swm-gaps:*outer-gaps-size* 0)	; Outer gaps
 
 ;; programs
 (define-key *root-map* (kbd "c") "exec urxvt")
+(define-key *root-map* (kbd "C-c") "exec LIBGL_ALWAYS_SOFTWARE=1 alacritty")
+(define-key *root-map* (kbd "P") "exec LIBGL_ALWAYS_SOFTWARE=true prusa-slicer")
 (define-key *root-map* (kbd "e") "exec urxvt -e emacs -nw")
 (define-key *root-map* (kbd "I") "exec icecat")
-;; (define-key *root-map* (kbd "C-x") "exec slock")
+(define-key *root-map* (kbd "C-x") "exec slock")
 (define-key *root-map* (kbd "C") "exec chromium")
-(define-key *root-map* (kbd "F") "exec freecad")
+(define-key *root-map* (kbd "F") "exec FreeCAD")
+(define-key *root-map* (kbd "T") "exec transmission-gtk")
+(define-key *root-map* (kbd "L") "exec libreoffice --writer")
 
 ;; clipboard
 (let (clip)
@@ -49,9 +77,15 @@
 	       (setq status "play"))
       (progn (run-shell-command "mpc play")
 	     (setq status "pause")))))
+
+(defcommand now-playing () ()
+	    (echo
+	     (string-trim '(#\newline)
+			  (run-shell-command "mpc status | head -n1" t))))
 (define-key *top-map* (kbd "XF86AudioPlay") "play-or-pause")
 (define-key *top-map* (kbd "XF86AudioNext") "exec mpc next")
 (define-key *top-map* (kbd "XF86AudioPrev") "exec mpc prev")
+(define-key *root-map* (kbd "N") "now-playing")
 
 ;; mode line format
 (setf *screen-mode-line-format*
